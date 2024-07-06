@@ -13,7 +13,7 @@ const TaskList = ({ tasks, onToggle, onDelete, setTasks }) => {
 
   return (
     <DragDropContext onDragEnd={handleOnDragEnd}>
-      <Droppable droppableId="droppable-tasks">
+      <Droppable droppableId="tasks">
         {(provided) => (
           <div {...provided.droppableProps} ref={provided.innerRef} className="mt-4">
             {tasks.map((task, index) => (
