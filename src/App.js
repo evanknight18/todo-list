@@ -4,7 +4,7 @@ import AddTask from './components/AddTask';
 import TaskList from './components/TaskList';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import ProgressBar from './components/ProgressBar'; // Import the ProgressBar component
+import ProgressBar from './components/ProgressBar';
 
 const App = () => {
   const [tasks, setTasks] = useState([]);
@@ -44,12 +44,13 @@ const App = () => {
     localStorage.setItem('darkMode', JSON.stringify(isDarkMode));
   }, [isDarkMode]);
 
-  const addTask = ({ name, priority, dueDate }) => {
+  const addTask = ({ name, priority, dueDate, notes }) => {
     const newTask = {
       id: uuidv4(),
       name,
       priority,
       dueDate,
+      notes: notes || '',
       completed: false
     };
     setTasks([...tasks, newTask]);
@@ -65,6 +66,14 @@ const App = () => {
 
   const deleteTask = (taskId) => {
     setTasks(tasks.filter((task) => task.id !== taskId));
+  };
+
+  const saveNotes = (taskId, notes) => {
+    setTasks(
+      tasks.map((task) =>
+        task.id === taskId ? { ...task, notes } : task
+      )
+    );
   };
 
   const filteredTasks = tasks.filter((task) => {
@@ -91,14 +100,14 @@ const App = () => {
           {isDarkMode ? 'Light' : 'Dark'}
         </button>
       </div>
-      <ProgressBar completedTasks={completedTasks} totalTasks={totalTasks} /> {/* Add ProgressBar */}
+      <ProgressBar completedTasks={completedTasks} totalTasks={totalTasks} />
       <AddTask onAdd={addTask} />
       <div className="flex justify-center mb-4">
         <button onClick={() => setFilter('all')} className="p-2 bg-red-700 hover:bg-red-900 text-white rounded mr-2">All</button>
         <button onClick={() => setFilter('completed')} className="p-2 bg-red-700 hover:bg-red-900 text-white rounded mr-2">Completed</button>
         <button onClick={() => setFilter('pending')} className="p-2 bg-red-700 hover:bg-red-900 text-white rounded">Pending</button>
       </div>
-      <TaskList tasks={filteredTasks} onToggle={toggleTaskCompletion} onDelete={deleteTask} setTasks={setTasks} /> {/* Pass setTasks */}
+      <TaskList tasks={filteredTasks} onToggle={toggleTaskCompletion} onDelete={deleteTask} onSaveNotes={saveNotes} />
       <Footer />
     </div>
   );

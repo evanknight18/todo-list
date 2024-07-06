@@ -1,39 +1,19 @@
 import React from 'react';
 import Task from './Task';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
-const TaskList = ({ tasks, onToggle, onDelete, setTasks }) => {
-  const handleOnDragEnd = (result) => {
-    if (!result.destination) return;
-    const items = Array.from(tasks);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
-    setTasks(items);
-  };
-
+const TaskList = ({ tasks, onToggle, onDelete, onSaveNotes }) => {
   return (
-    <DragDropContext onDragEnd={handleOnDragEnd}>
-      <Droppable droppableId="tasks">
-        {(provided) => (
-          <div {...provided.droppableProps} ref={provided.innerRef} className="mt-4">
-            {tasks.map((task, index) => (
-              <Draggable key={task.id} draggableId={task.id} index={index}>
-                {(provided) => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
-                  >
-                    <Task task={task} onToggle={onToggle} onDelete={onDelete} />
-                  </div>
-                )}
-              </Draggable>
-            ))}
-            {provided.placeholder}
+    <div className="mt-4">
+      {tasks.length === 0 ? (
+        <div>Loading tasks...</div>
+      ) : (
+        tasks.map((task) => (
+          <div key={task.id}>
+            <Task task={task} onToggle={onToggle} onDelete={onDelete} onSaveNotes={onSaveNotes} />
           </div>
-        )}
-      </Droppable>
-    </DragDropContext>
+        ))
+      )}
+    </div>
   );
 };
 
