@@ -1,18 +1,19 @@
 import React from 'react';
 import Task from './Task';
 
-const TaskList = ({ tasks, onToggle, onDelete, onSaveNotes }) => {
+const TaskList = ({ tasks, onToggle, onDelete, onSaveNotes, onToggleSubtask }) => {
   return (
     <div className="mt-4">
-      {tasks.length === 0 ? (
-        <div>Loading tasks...</div>
-      ) : (
-        tasks.map((task) => (
-          <div key={task.id}>
-            <Task task={task} onToggle={onToggle} onDelete={onDelete} onSaveNotes={onSaveNotes} />
-          </div>
-        ))
-      )}
+      {tasks.map((task) => (
+        <Task
+          key={task.id}
+          task={task}
+          onToggle={onToggle}
+          onDelete={onDelete}
+          onSaveNotes={onSaveNotes}
+          onToggleSubtask={onToggleSubtask}  // Pass the prop here
+        />
+      ))}
     </div>
   );
 };

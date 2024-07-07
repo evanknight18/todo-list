@@ -44,14 +44,15 @@ const App = () => {
     localStorage.setItem('darkMode', JSON.stringify(isDarkMode));
   }, [isDarkMode]);
 
-  const addTask = ({ name, priority, dueDate, notes }) => {
+  const addTask = ({ name, priority, dueDate, subtasks }) => {
     const newTask = {
       id: uuidv4(),
       name,
       priority,
       dueDate,
-      notes: notes || '',
-      completed: false
+      notes: '',
+      completed: false,
+      subtasks
     };
     setTasks([...tasks, newTask]);
   };
@@ -61,6 +62,23 @@ const App = () => {
       tasks.map((task) =>
         task.id === taskId ? { ...task, completed: !task.completed } : task
       )
+    );
+  };
+
+  const toggleSubtaskCompletion = (taskId, subtaskIndex) => {
+    setTasks(
+      tasks.map((task) => {
+        if (task.id === taskId) {
+          const updatedSubtasks = task.subtasks.map((subtask, index) => {
+            if (index === subtaskIndex) {
+              return { ...subtask, completed: !subtask.completed };
+            }
+            return subtask;
+          });
+          return { ...task, subtasks: updatedSubtasks };
+        }
+        return task;
+      })
     );
   };
 
@@ -107,7 +125,7 @@ const App = () => {
         <button onClick={() => setFilter('completed')} className="p-2 bg-red-700 hover:bg-red-900 text-white rounded mr-2">Completed</button>
         <button onClick={() => setFilter('pending')} className="p-2 bg-red-700 hover:bg-red-900 text-white rounded">Pending</button>
       </div>
-      <TaskList tasks={filteredTasks} onToggle={toggleTaskCompletion} onDelete={deleteTask} onSaveNotes={saveNotes} />
+      <TaskList tasks={filteredTasks} onToggle={toggleTaskCompletion} onDelete={deleteTask} onSaveNotes={saveNotes} onToggleSubtask={toggleSubtaskCompletion} />
       <Footer />
     </div>
   );
