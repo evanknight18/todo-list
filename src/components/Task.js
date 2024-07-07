@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { format, isPast, parseISO } from 'date-fns';
+import { Link } from 'react-router-dom';
 import TaskDetailsModal from './TaskDetailsModal';
 
 const Task = ({ task, onToggle, onDelete, onSaveNotes, onToggleSubtask }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const priorityColor = {
-    low: 'bg-green-800',
-    medium: 'bg-yellow-800',
-    high: 'bg-red-800'
+    low: 'bg-green-500',
+    medium: 'bg-yellow-500',
+    high: 'bg-red-500'
   }[task.priority];
 
   const isTaskOverdue = task.dueDate && isPast(parseISO(task.dueDate));
@@ -48,9 +49,11 @@ const Task = ({ task, onToggle, onDelete, onSaveNotes, onToggleSubtask }) => {
             className="mr-2"
           />
           <div>
-            <span className={`text-lg ${task.completed ? 'line-through text-gray-500' : ''}`}>
-              {task.name}
-            </span>
+            <Link to={`/task/${task.id}`} className="text-lg">
+              <span className={`${task.completed ? 'line-through text-gray-500' : ''}`}>
+                {task.name}
+              </span>
+            </Link>
             {task.dueDate && (
               <div className="text-sm">
                 Due: {format(parseISO(task.dueDate), 'MM/dd/yyyy')}
