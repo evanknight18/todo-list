@@ -7,6 +7,9 @@ import TaskDetails from './components/TaskDetails';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ProgressBar from './components/ProgressBar';
+import Login from './Login';
+import Register from './Register';
+import { AuthProvider } from './AuthContext';
 
 const App = () => {
   const [tasks, setTasks] = useState([]);
@@ -110,41 +113,45 @@ const App = () => {
   const totalTasks = tasks.length;
 
   return (
-    <Router>
-      <div className={`App container mx-auto p-4 min-h-screen ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'}`}>
-        <Header />
-        <div className="flex justify-end mb-4">
-          <button
-            onClick={() => setIsDarkMode(!isDarkMode)}
-            className="p-2 bg-black hover:bg-red-900 text-white rounded"
-          >
-            {isDarkMode ? 'Light' : 'Dark'}
-          </button>
+    <AuthProvider>
+      <Router>
+        <div className={`App container mx-auto p-4 min-h-screen ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'}`}>
+          <Header />
+          <div className="flex justify-end mb-4">
+            <button
+              onClick={() => setIsDarkMode(!isDarkMode)}
+              className="p-2 bg-black hover:bg-red-900 text-white rounded"
+            >
+              {isDarkMode ? 'Light' : 'Dark'}
+            </button>
+          </div>
+          <ProgressBar completedTasks={completedTasks} totalTasks={totalTasks} />
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <>
+                  <AddTask onAdd={addTask} />
+                  <div className="flex justify-center mb-4">
+                    <button onClick={() => setFilter('all')} className="p-2 bg-red-700 hover:bg-red-900 text-white rounded mr-2">All</button>
+                    <button onClick={() => setFilter('completed')} className="p-2 bg-red-700 hover:bg-red-900 text-white rounded mr-2">Completed</button>
+                    <button onClick={() => setFilter('pending')} className="p-2 bg-red-700 hover:bg-red-900 text-white rounded">Pending</button>
+                  </div>
+                  <TaskList tasks={filteredTasks} onToggle={toggleTaskCompletion} onDelete={deleteTask} onSaveNotes={saveNotes} onToggleSubtask={toggleSubtaskCompletion} />
+                </>
+              }
+            />
+            <Route
+              path="/task/:id"
+              element={<TaskDetails tasks={tasks} onToggleSubtask={toggleSubtaskCompletion} />}
+            />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+          </Routes>
+          <Footer />
         </div>
-        <ProgressBar completedTasks={completedTasks} totalTasks={totalTasks} />
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <>
-                <AddTask onAdd={addTask} />
-                <div className="flex justify-center mb-4">
-                  <button onClick={() => setFilter('all')} className="p-2 bg-red-700 hover:bg-red-900 text-white rounded mr-2">All</button>
-                  <button onClick={() => setFilter('completed')} className="p-2 bg-red-700 hover:bg-red-900 text-white rounded mr-2">Completed</button>
-                  <button onClick={() => setFilter('pending')} className="p-2 bg-red-700 hover:bg-red-900 text-white rounded">Pending</button>
-                </div>
-                <TaskList tasks={filteredTasks} onToggle={toggleTaskCompletion} onDelete={deleteTask} onSaveNotes={saveNotes} onToggleSubtask={toggleSubtaskCompletion} />
-              </>
-            }
-          />
-          <Route
-            path="/task/:id"
-            element={<TaskDetails tasks={tasks} onToggleSubtask={toggleSubtaskCompletion} />}
-          />
-        </Routes>
-        <Footer />
-      </div>
-    </Router>
+      </Router>
+    </AuthProvider>
   );
 };
 

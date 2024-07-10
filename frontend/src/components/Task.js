@@ -76,6 +76,15 @@ const Task = ({ task, onToggle, onDelete, onSaveNotes, onToggleSubtask }) => {
                 ))}
               </ul>
             )}
+            {task.labels && task.labels.length > 0 && (
+              <div className="mt-2">
+                {task.labels.map((label, index) => (
+                  <span key={index} className="p-1 bg-blue-700 text-white rounded mr-2">
+                    {label}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
         </div>
         <button
