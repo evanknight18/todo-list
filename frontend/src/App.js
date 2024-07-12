@@ -1,15 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import AddTask from './components/AddTask';
-import TaskList from './components/TaskList';
+import { v4 as uuidv4 } from 'uuid';
+import AuthProvider from './contexts/AuthContext';
 import TaskDetails from './components/TaskDetails';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ProgressBar from './components/ProgressBar';
-import Login from './Login';
-import Register from './Register';
-import { AuthProvider } from './AuthContext';
+import Register from './components/Register';
+import Login from './components/Login';
+import Dashboard from './components/Dashboard';
 
 const App = () => {
   const [tasks, setTasks] = useState([]);
@@ -57,7 +56,7 @@ const App = () => {
       dueDate,
       notes: '',
       completed: false,
-      subtasks
+      subtasks // Ensure subtasks is defined and used correctly
     };
     setTasks([...tasks, newTask]);
   };
@@ -99,16 +98,6 @@ const App = () => {
     );
   };
 
-  const filteredTasks = tasks.filter((task) => {
-    if (filter === 'completed') {
-      return task.completed;
-    }
-    if (filter === 'pending') {
-      return !task.completed;
-    }
-    return true;
-  });
-
   const completedTasks = tasks.filter(task => task.completed).length;
   const totalTasks = tasks.length;
 
@@ -130,23 +119,24 @@ const App = () => {
             <Route
               path="/"
               element={
-                <>
-                  <AddTask onAdd={addTask} />
-                  <div className="flex justify-center mb-4">
-                    <button onClick={() => setFilter('all')} className="p-2 bg-red-700 hover:bg-red-900 text-white rounded mr-2">All</button>
-                    <button onClick={() => setFilter('completed')} className="p-2 bg-red-700 hover:bg-red-900 text-white rounded mr-2">Completed</button>
-                    <button onClick={() => setFilter('pending')} className="p-2 bg-red-700 hover:bg-red-900 text-white rounded">Pending</button>
-                  </div>
-                  <TaskList tasks={filteredTasks} onToggle={toggleTaskCompletion} onDelete={deleteTask} onSaveNotes={saveNotes} onToggleSubtask={toggleSubtaskCompletion} />
-                </>
+                <Dashboard 
+                  tasks={tasks} 
+                  onAdd={addTask} 
+                  onToggle={toggleTaskCompletion} 
+                  onDelete={deleteTask} 
+                  onSaveNotes={saveNotes} 
+                  onToggleSubtask={toggleSubtaskCompletion} 
+                  filter={filter} 
+                  setFilter={setFilter}
+                />
               }
             />
             <Route
               path="/task/:id"
               element={<TaskDetails tasks={tasks} onToggleSubtask={toggleSubtaskCompletion} />}
             />
-            <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
           </Routes>
           <Footer />
         </div>

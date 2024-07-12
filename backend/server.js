@@ -1,20 +1,24 @@
 const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
 const connectDB = require('./config/db');
-const authRoutes = require('./routes/authRoutes');
-const authMiddleware = require('./middleware/authMiddleware');
-
-// Connect to the database
-connectDB();
 
 const app = express();
-app.use(express.json());
 
-app.use('/api/auth', authRoutes);
+// Connect Database
+connectDB();
 
-// Example of a protected route
-app.get('/api/protected', authMiddleware, (req, res) => {
-  res.json({ message: 'This is a protected route' });
-});
+// Init Middleware
+app.use(express.json({ extended: false }));
+
+// Enable CORS
+app.use(cors());
+
+app.get('/', (req, res) => res.send('API Running'));
+
+// Define Routes
+app.use('/api/auth', require('./routes/authRoutes')); // Correct path
 
 const PORT = process.env.PORT || 5000;
+
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
