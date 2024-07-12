@@ -1,26 +1,27 @@
 // backend/routes/authRoutes.js
+
 const express = require('express');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const { generateToken } = require('../utils/auth');
 
 const router = express.Router();
-const secret = 'your_jwt_secret'; // Should be stored in environment variables
 
-// Register
+// Register route
 router.post('/register', async (req, res) => {
   try {
     const { username, password } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({ username, password: hashedPassword });
     await newUser.save();
-    res.status(201).json({ message: 'User created successfully' });
+    const token = generateToken(newUser);
+    res.status(201).json({ token });
   } catch (error) {
     res.status(500).json({ error: 'Error creating user' });
   }
 });
 
-// Login
+// Login route
 router.post('/login', async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -32,7 +33,7 @@ router.post('/login', async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({ error: 'Invalid credentials' });
     }
-    const token = jwt.sign({ userId: user._id }, secret, { expiresIn: '1h' });
+    const token = generateToken(user);
     res.status(200).json({ token });
   } catch (error) {
     res.status(500).json({ error: 'Error logging in' });

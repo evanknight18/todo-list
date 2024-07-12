@@ -1,13 +1,13 @@
-// backend/server.js
 const express = require('express');
-const mongoose = require('mongoose');
+const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const authMiddleware = require('./middleware/authMiddleware');
 
+// Connect to the database
+connectDB();
+
 const app = express();
 app.use(express.json());
-
-mongoose.connect('mongodb://localhost:27017/yourdbname', { useNewUrlParser: true, useUnifiedTopology: true });
 
 app.use('/api/auth', authRoutes);
 
