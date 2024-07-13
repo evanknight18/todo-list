@@ -1,11 +1,12 @@
-import React, { useContext, useEffect } from 'react';
-import { AuthContext } from '../contexts/AuthContext';
+import React, { useEffect, useContext, useState } from 'react';
 import AddTask from './AddTask';
 import TaskList from './TaskList';
+import { AuthContext } from '../contexts/AuthContext';
 import axios from 'axios';
 
-const Dashboard = ({ tasks, onAdd, onToggle, onDelete, onSaveNotes, onToggleSubtask, filter, setFilter, setTasks }) => {
-  const { authState, logout } = useContext(AuthContext);
+const Dashboard = ({ onAdd, onToggle, onDelete, onSaveNotes, onToggleSubtask, filter, setFilter }) => {
+  const { authState, logout } = useContext(AuthContext); // Get the logout function
+  const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -16,15 +17,15 @@ const Dashboard = ({ tasks, onAdd, onToggle, onDelete, onSaveNotes, onToggleSubt
           }
         });
         setTasks(res.data);
-      } catch (error) {
-        console.error('Error fetching tasks:', error);
+      } catch (err) {
+        console.error('Error fetching tasks:', err);
       }
     };
 
     if (authState.isAuthenticated) {
       fetchTasks();
     }
-  }, [authState, setTasks]);
+  }, [authState]);
 
   const filteredTasks = tasks.filter((task) => {
     if (filter === 'completed') {
@@ -36,16 +37,31 @@ const Dashboard = ({ tasks, onAdd, onToggle, onDelete, onSaveNotes, onToggleSubt
     return true;
   });
 
+  const handleAddTask = async (taskData) => {
+    try {
+      const res = await axios.post('/api/tasks', taskData, {
+        headers: {
+          Authorization: `Bearer ${authState.token}`
+        }
+      });
+      setTasks([...tasks, res.data]);
+    } catch (err) {
+      console.error('Error adding task:', err);
+    }
+  };
+
   return (
     <div>
-      <AddTask onAdd={onAdd} />
+      <AddTask onAdd={handleAddTask} />
       <div className="flex justify-center mb-4">
         <button onClick={() => setFilter('all')} className="p-2 bg-red-700 hover:bg-red-900 text-white rounded mr-2">All</button>
         <button onClick={() => setFilter('completed')} className="p-2 bg-red-700 hover:bg-red-900 text-white rounded mr-2">Completed</button>
         <button onClick={() => setFilter('pending')} className="p-2 bg-red-700 hover:bg-red-900 text-white rounded">Pending</button>
       </div>
       <TaskList tasks={filteredTasks} onToggle={onToggle} onDelete={onDelete} onSaveNotes={onSaveNotes} onToggleSubtask={onToggleSubtask} />
-      <button onClick={logout} className="p-2 bg-blue-700 hover:bg-blue-900 text-white rounded">Logout</button>
+      <div className="flex justify-end mt-4">
+        <button onClick={logout} className="p-2 bg-red-700 hover:bg-red-900 text-white rounded">Logout</button>
+      </div>
     </div>
   );
 };

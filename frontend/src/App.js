@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
+import { ToastContainer } from 'react-toastify';
 import AuthProvider, { AuthContext } from './contexts/AuthContext';
 import TaskDetails from './components/TaskDetails';
 import Header from './components/Header';
@@ -9,6 +10,7 @@ import ProgressBar from './components/ProgressBar';
 import Register from './components/Register';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
   const [tasks, setTasks] = useState([]);
@@ -131,7 +133,6 @@ const App = () => {
                       onToggleSubtask={toggleSubtaskCompletion} 
                       filter={filter} 
                       setFilter={setFilter}
-                      setTasks={setTasks}
                     />
                   ) : (
                     <Navigate to="/login" />
@@ -145,6 +146,7 @@ const App = () => {
           </Routes>
           <Footer />
         </div>
+        <ToastContainer />
       </Router>
     </AuthProvider>
   );

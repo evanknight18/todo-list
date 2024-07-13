@@ -1,17 +1,32 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useContext } from 'react';
+import { Link } from 'react-router-dom';
+import { AuthContext } from '../contexts/AuthContext';
 
 const Header = () => {
-    return (
-        <header className="bg-gray-800 text-white text-center p-4">
-        <h1 className="text-3xl font-bold">Get $#!T Done</h1>
-        <nav>
-        <Link to="/" className="text-white mr-4">Home</Link>
-        <Link to="/register" className="text-white mr-4">Register</Link>
-        <Link to="/login" className="text-white">Login</Link>
+  const { authState, logout } = useContext(AuthContext);
+
+  return (
+    <header className="bg-gray-800 p-4 text-white flex justify-between items-center">
+      <h1 className="text-2xl">Task Manager</h1>
+      <nav>
+        {authState.isAuthenticated ? (
+          <>
+            <span className="mr-4">Hello, {authState.user.username}</span>
+            <button onClick={logout} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+              Logout
+            </button>
+          </>
+        ) : (
+          <>
+            <Link to="/login" className="mr-4">Login</Link>
+            <Link to="/register" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+              Register
+            </Link>
+          </>
+        )}
       </nav>
-        </header>
-    );
-    };
+    </header>
+  );
+};
 
 export default Header;

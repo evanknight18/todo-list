@@ -1,5 +1,3 @@
-// backend/routes/taskRoutes.js
-
 const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/authMiddleware');
@@ -29,7 +27,7 @@ router.get('/', authMiddleware, async (req, res) => {
 
 // Update a task
 router.put('/:id', authMiddleware, async (req, res) => {
-  const { name, priority, dueDate, notes, completed, subtasks } = req.body;
+  const { name, priority, dueDate, subtasks, completed } = req.body;
   try {
     const task = await Task.findById(req.params.id);
     if (!task) {
@@ -41,9 +39,8 @@ router.put('/:id', authMiddleware, async (req, res) => {
     task.name = name;
     task.priority = priority;
     task.dueDate = dueDate;
-    task.notes = notes;
-    task.completed = completed;
     task.subtasks = subtasks;
+    task.completed = completed;
     await task.save();
     res.json(task);
   } catch (error) {
