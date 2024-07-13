@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../contexts/AuthContext';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -8,6 +9,8 @@ const Register = () => {
   });
 
   const { username, password } = formData;
+  const { register } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const onChange = e =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -15,8 +18,8 @@ const Register = () => {
   const onSubmit = async e => {
     e.preventDefault();
     try {
-      const res = await axios.post('/api/auth/register', formData);
-      console.log(res.data);
+      await register(formData);
+      navigate('/dashboard'); // Redirect to dashboard after successful registration
     } catch (err) {
       console.error(err.response.data);
     }
@@ -31,7 +34,7 @@ const Register = () => {
           name="username"
           value={username}
           onChange={onChange}
-          style={{ color: 'black' }} // Ensuring text is visible
+          style={{ color: 'black' }}
         />
       </div>
       <div>
@@ -41,7 +44,7 @@ const Register = () => {
           name="password"
           value={password}
           onChange={onChange}
-          style={{ color: 'black' }} // Ensuring text is visible
+          style={{ color: 'black' }}
         />
       </div>
       <button type="submit">Register</button>

@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
-const { generateToken } = require('../utils/auth');
+const { generateToken } = require('../utils/auth'); // Correct import
 
 const router = express.Router();
 
@@ -30,16 +30,13 @@ router.post('/login', async (req, res) => {
   try {
     const { username, password } = req.body;
     const user = await User.findOne({ username });
-
     if (!user) {
       return res.status(400).json({ error: 'Invalid credentials' });
     }
-
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ error: 'Invalid credentials' });
     }
-
     const token = generateToken(user);
     res.status(200).json({ token });
   } catch (error) {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
-import AuthProvider from './contexts/AuthContext';
+import AuthProvider, { AuthContext } from './contexts/AuthContext';
 import TaskDetails from './components/TaskDetails';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -116,25 +116,29 @@ const App = () => {
           </div>
           <ProgressBar completedTasks={completedTasks} totalTasks={totalTasks} />
           <Routes>
-            <Route
-              path="/"
+            <Route path="/" element={<Navigate to="/dashboard" />} />
+            <Route 
+              path="/dashboard" 
               element={
-                <Dashboard 
-                  tasks={tasks} 
-                  onAdd={addTask} 
-                  onToggle={toggleTaskCompletion} 
-                  onDelete={deleteTask} 
-                  onSaveNotes={saveNotes} 
-                  onToggleSubtask={toggleSubtaskCompletion} 
-                  filter={filter} 
-                  setFilter={setFilter}
-                />
-              }
+                <AuthContext.Consumer>
+                  {({ authState }) => authState.isAuthenticated ? (
+                    <Dashboard 
+                      tasks={tasks} 
+                      onAdd={addTask} 
+                      onToggle={toggleTaskCompletion} 
+                      onDelete={deleteTask} 
+                      onSaveNotes={saveNotes} 
+                      onToggleSubtask={toggleSubtaskCompletion} 
+                      filter={filter} 
+                      setFilter={setFilter}
+                    />
+                  ) : (
+                    <Navigate to="/login" />
+                  )}
+                </AuthContext.Consumer>
+              } 
             />
-            <Route
-              path="/task/:id"
-              element={<TaskDetails tasks={tasks} onToggleSubtask={toggleSubtaskCompletion} />}
-            />
+            <Route path="/task/:id" element={<TaskDetails tasks={tasks} onToggleSubtask={toggleSubtaskCompletion} />} />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
           </Routes>
