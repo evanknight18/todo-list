@@ -1,11 +1,11 @@
-// frontend/src/components/Login.js
-
 import React, { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 
 const Login = () => {
   const { login } = useContext(AuthContext);
   const [userData, setUserData] = useState({ username: '', password: '' });
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -15,11 +15,12 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     await login(userData);
+    navigate('/dashboard');
   };
 
   return (
-    <div className="flex justify-center items-center bg-gray-800 p-8 min-h-full">
-      <div className="bg-gray-900 p-8 rounded shadow-md w-full max-w-md">
+    <div className="flex justify-center items-center min-h-full bg-gray-800">
+      <div className="bg-gray-900 p-6 rounded shadow-md w-full max-w-sm">
         <h2 className="text-2xl font-bold mb-6 text-white">Login</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">

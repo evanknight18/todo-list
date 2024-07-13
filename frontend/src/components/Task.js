@@ -16,17 +16,17 @@ const Task = ({ task, onToggle, onDelete, onSaveNotes, onToggleSubtask }) => {
 
   const handleCheckboxClick = (e) => {
     e.stopPropagation();
-    onToggle(task.id);
+    onToggle(task._id);
   };
 
   const handleSubtaskCheckboxClick = (e, subtaskIndex) => {
     e.stopPropagation();
-    onToggleSubtask(task.id, subtaskIndex);
+    onToggleSubtask(task._id, subtaskIndex);
   };
 
   const handleDeleteClick = (e) => {
     e.stopPropagation();
-    onDelete(task.id);
+    onDelete(task._id);
   };
 
   const handleTaskClick = (e) => {
@@ -49,7 +49,7 @@ const Task = ({ task, onToggle, onDelete, onSaveNotes, onToggleSubtask }) => {
             className="mr-2"
           />
           <div>
-            <Link to={`/task/${task.id}`} className="text-lg">
+            <Link to={`/task/${task._id}`} className="text-lg">
               <span className={`${task.completed ? 'line-through text-gray-500' : ''}`}>
                 {task.name}
               </span>

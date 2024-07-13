@@ -4,8 +4,8 @@ import TaskList from './TaskList';
 import { AuthContext } from '../contexts/AuthContext';
 import axios from 'axios';
 
-const Dashboard = ({ onAdd, onToggle, onDelete, onSaveNotes, onToggleSubtask, filter, setFilter }) => {
-  const { authState, logout } = useContext(AuthContext); // Get the logout function
+const Dashboard = ({ onToggle, onSaveNotes, onToggleSubtask, filter, setFilter }) => {
+  const { authState } = useContext(AuthContext);
   const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
@@ -50,6 +50,19 @@ const Dashboard = ({ onAdd, onToggle, onDelete, onSaveNotes, onToggleSubtask, fi
     }
   };
 
+  const handleDeleteTask = async (taskId) => {
+    try {
+      await axios.delete(`/api/tasks/${taskId}`, {
+        headers: {
+          Authorization: `Bearer ${authState.token}`
+        }
+      });
+      setTasks(tasks.filter((task) => task._id !== taskId));
+    } catch (err) {
+      console.error('Error deleting task:', err);
+    }
+  };
+
   return (
     <div>
       <AddTask onAdd={handleAddTask} />
@@ -58,10 +71,13 @@ const Dashboard = ({ onAdd, onToggle, onDelete, onSaveNotes, onToggleSubtask, fi
         <button onClick={() => setFilter('completed')} className="p-2 bg-red-700 hover:bg-red-900 text-white rounded mr-2">Completed</button>
         <button onClick={() => setFilter('pending')} className="p-2 bg-red-700 hover:bg-red-900 text-white rounded">Pending</button>
       </div>
-      <TaskList tasks={filteredTasks} onToggle={onToggle} onDelete={onDelete} onSaveNotes={onSaveNotes} onToggleSubtask={onToggleSubtask} />
-      <div className="flex justify-end mt-4">
-        <button onClick={logout} className="p-2 bg-red-700 hover:bg-red-900 text-white rounded">Logout</button>
-      </div>
+      <TaskList 
+        tasks={filteredTasks} 
+        onToggle={onToggle} 
+        onDelete={handleDeleteTask} 
+        onSaveNotes={onSaveNotes} 
+        onToggleSubtask={onToggleSubtask} 
+      />
     </div>
   );
 };

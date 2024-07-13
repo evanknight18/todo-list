@@ -6,7 +6,7 @@ const TaskList = ({ tasks, onToggle, onDelete, onSaveNotes, onToggleSubtask }) =
     <div className="mt-4">
       {tasks.map((task) => (
         <Task
-          key={task.id}
+          key={task._id}
           task={task}
           onToggle={onToggle}
           onDelete={onDelete}
