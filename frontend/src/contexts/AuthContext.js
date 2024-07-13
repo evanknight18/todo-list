@@ -1,3 +1,5 @@
+// frontend/src/contexts/AuthContext.js
+
 import React, { createContext, useState } from 'react';
 import axios from 'axios';
 
@@ -5,8 +7,8 @@ export const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
   const [authState, setAuthState] = useState({
-    token: null,
-    isAuthenticated: false
+    token: localStorage.getItem('token') || null,
+    isAuthenticated: !!localStorage.getItem('token')
   });
 
   const register = async (userData) => {

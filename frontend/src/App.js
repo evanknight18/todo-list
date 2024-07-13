@@ -131,6 +131,7 @@ const App = () => {
                       onToggleSubtask={toggleSubtaskCompletion} 
                       filter={filter} 
                       setFilter={setFilter}
+                      setTasks={setTasks}
                     />
                   ) : (
                     <Navigate to="/login" />

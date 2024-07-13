@@ -7,9 +7,9 @@ const Task = require('../models/Task');
 
 // Create a new task
 router.post('/', authMiddleware, async (req, res) => {
-  const { title, description } = req.body;
+  const { name, priority, dueDate, subtasks } = req.body;
   try {
-    const newTask = new Task({ user: req.user.id, title, description });
+    const newTask = new Task({ user: req.user.id, name, priority, dueDate, subtasks });
     await newTask.save();
     res.json(newTask);
   } catch (error) {
@@ -29,7 +29,7 @@ router.get('/', authMiddleware, async (req, res) => {
 
 // Update a task
 router.put('/:id', authMiddleware, async (req, res) => {
-  const { title, description, completed } = req.body;
+  const { name, priority, dueDate, notes, completed, subtasks } = req.body;
   try {
     const task = await Task.findById(req.params.id);
     if (!task) {
@@ -38,9 +38,12 @@ router.put('/:id', authMiddleware, async (req, res) => {
     if (task.user.toString() !== req.user.id) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
-    task.title = title;
-    task.description = description;
+    task.name = name;
+    task.priority = priority;
+    task.dueDate = dueDate;
+    task.notes = notes;
     task.completed = completed;
+    task.subtasks = subtasks;
     await task.save();
     res.json(task);
   } catch (error) {

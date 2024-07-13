@@ -1,19 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import axios from 'axios';
+import { AuthContext } from '../contexts/AuthContext';
 
 const AddTask = ({ onAdd }) => {
   const [task, setTask] = useState('');
   const [priority, setPriority] = useState('low');
   const [dueDate, setDueDate] = useState('');
   const [subtasks, setSubtasks] = useState([{ name: '', completed: false }]);
+  const { authState } = useContext(AuthContext);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (task) {
-      onAdd({ name: task, priority, dueDate, subtasks });
-      setTask('');
-      setPriority('low');
-      setDueDate('');
-      setSubtasks([{ name: '', completed: false }]);
+      try {
+        const res = await axios.post('/api/tasks', { name: task, priority, dueDate, subtasks }, {
+          headers: {
+            Authorization: `Bearer ${authState.token}`
+          }
+        });
+        onAdd(res.data);
+        setTask('');
+        setPriority('low');
+        setDueDate('');
+        setSubtasks([{ name: '', completed: false }]);
+      } catch (error) {
+        console.error('Error adding task:', error);
+      }
     }
   };
 
