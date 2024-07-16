@@ -1,70 +1,130 @@
-# Getting Started with Create React App
+# To-Do List Application
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Table of Contents
 
-## Available Scripts
+- [Introduction](#introduction)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Running the Application](#running-the-application)
+- [API Endpoints](#api-endpoints)
+- [Contributing](#contributing)
+- [License](#license)
+- [Acknowledgements](#acknowledgements)
 
-In the project directory, you can run:
+## Introduction
 
-### `npm start`
+The To-Do List Application is a full-stack web application designed to help users manage their daily tasks. Users can register, log in, and manage their tasks with a user-friendly interface. The application supports CRUD operations on tasks and includes features like prioritization, due dates, and subtasks.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Features
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- User Authentication (Registration, Login, Logout)
+- Add, Update, Delete Tasks
+- Prioritize Tasks (Low, Medium, High)
+- Set Due Dates for Tasks
+- Add Subtasks
+- Dark Mode Toggle
+- User-specific Task Management
 
-### `npm test`
+## Tech Stack
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- **Frontend:** React, Tailwind CSS
+- **Backend:** Node.js, Express
+- **Database:** MongoDB
+- **Authentication:** JWT (JSON Web Tokens)
+- **Styling:** Tailwind CSS
 
-### `npm run build`
+## Getting Started
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Prerequisites
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Ensure you have the following installed:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- Node.js (v14 or later)
+- npm (v6 or later)
+- MongoDB (local instance or MongoDB Atlas)
 
-### `npm run eject`
+### Installation
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+1. Clone the repository:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+   ```sh
+   git clone https://github.com/evanknight18/todo-list.git
+   cd todo-list
+   ```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+2. Install dependencies for both frontend and backend:
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+   ```sh
+   cd frontend
+   npm install
+   cd ../backend
+   npm install
+   ```
 
-## Learn More
+### Running the Application
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+1. Start the MongoDB server (skip if using MongoDB Atlas).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+2. Create a `.env` file in the `backend` directory and add the following:
 
-### Code Splitting
+   ```env
+   MONGODB_URI=<your_mongodb_uri>
+   JWT_SECRET=<your_jwt_secret>
+   ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+3. Start the backend server:
 
-### Analyzing the Bundle Size
+   ```sh
+   cd backend
+   npm start
+   ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+4. Start the frontend development server:
 
-### Making a Progressive Web App
+   ```sh
+   cd frontend
+   npm start
+   ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+5. Open your browser and navigate to `http://localhost:3000`.
 
-### Advanced Configuration
+## API Endpoints
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### Authentication
 
-### Deployment
+- **POST** `/api/auth/register` - Register a new user
+- **POST** `/api/auth/login` - Login a user
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+### Tasks
 
-### `npm run build` fails to minify
+- **GET** `/api/tasks` - Get all tasks for the logged-in user
+- **POST** `/api/tasks` - Create a new task
+- **PUT** `/api/tasks/:id` - Update a task
+- **DELETE** `/api/tasks/:id` - Delete a task
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Contributing
+
+Contributions are welcome! Please follow these steps:
+
+1. Fork the repository
+2. Create a new branch (`git checkout -b feature/your-feature-name`)
+3. Commit your changes (`git commit -m 'Add some feature'`)
+4. Push to the branch (`git push origin feature/your-feature-name`)
+5. Open a pull request
+
+## License
+
+This project is licensed under the MIT License.
+
+## Acknowledgements
+
+- [React](https://reactjs.org/)
+- [Node.js](https://nodejs.org/)
+- [Express](https://expressjs.com/)
+- [MongoDB](https://www.mongodb.com/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [React Icons](https://react-icons.github.io/react-icons/)
+- [react-toastify](https://fkhadra.github.io/react-toastify/)
