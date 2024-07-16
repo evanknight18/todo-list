@@ -7,7 +7,7 @@ const TaskDetailsModal = ({ task, isOpen, onRequestClose, onSaveNotes }) => {
   const [notes, setNotes] = useState(task.notes || '');
 
   const handleSave = () => {
-    onSaveNotes(task.id, notes);
+    onSaveNotes(task._id, notes); // Changed `task.id` to `task._id` to match the MongoDB ObjectId format
     onRequestClose();
   };
 

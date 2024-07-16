@@ -7,7 +7,7 @@ const Task = require('../models/Task');
 
 // Create a new task
 router.post('/', authMiddleware, async (req, res) => {
-  const { name, priority, dueDate, subtasks } = req.body;
+  const { name, priority, dueDate, subtasks, notes } = req.body; // Added notes
   try {
     const newTask = new Task({
       user: req.user.id,
@@ -15,6 +15,7 @@ router.post('/', authMiddleware, async (req, res) => {
       priority,
       dueDate,
       subtasks,
+      notes // Added notes
     });
     await newTask.save();
     res.json(newTask);
@@ -37,7 +38,7 @@ router.get('/', authMiddleware, async (req, res) => {
 
 // Update a task
 router.put('/:id', authMiddleware, async (req, res) => {
-  const { name, priority, dueDate, completed, subtasks } = req.body;
+  const { name, priority, dueDate, completed, subtasks, notes } = req.body; // Added notes
   try {
     const task = await Task.findById(req.params.id);
     if (!task) {
@@ -51,6 +52,7 @@ router.put('/:id', authMiddleware, async (req, res) => {
     task.dueDate = dueDate;
     task.completed = completed;
     task.subtasks = subtasks;
+    task.notes = notes; // Added notes
     await task.save();
     res.json(task);
   } catch (error) {

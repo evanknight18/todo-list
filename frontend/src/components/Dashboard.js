@@ -4,9 +4,10 @@ import TaskList from './TaskList';
 import { AuthContext } from '../contexts/AuthContext';
 import axios from 'axios';
 
-const Dashboard = ({ onToggle, onSaveNotes, onToggleSubtask, filter, setFilter }) => {
+const Dashboard = () => {
   const { authState } = useContext(AuthContext);
   const [tasks, setTasks] = useState([]);
+  const [filter, setFilter] = useState('all');
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -50,6 +51,45 @@ const Dashboard = ({ onToggle, onSaveNotes, onToggleSubtask, filter, setFilter }
     }
   };
 
+  const handleToggleTask = async (taskId) => {
+    const task = tasks.find((task) => task._id === taskId);
+    if (!task) return;
+
+    try {
+      const res = await axios.put(`/api/tasks/${task._id}`, { ...task, completed: !task.completed }, {
+        headers: {
+          Authorization: `Bearer ${authState.token}`
+        }
+      });
+      setTasks(tasks.map((t) => (t._id === taskId ? res.data : t)));
+    } catch (err) {
+      console.error('Error toggling task:', err);
+    }
+  };
+
+  const handleToggleSubtask = async (taskId, subtaskIndex) => {
+    const task = tasks.find((task) => task._id === taskId);
+    if (!task) return;
+
+    const updatedSubtasks = task.subtasks.map((subtask, index) => {
+      if (index === subtaskIndex) {
+        return { ...subtask, completed: !subtask.completed };
+      }
+      return subtask;
+    });
+
+    try {
+      const res = await axios.put(`/api/tasks/${task._id}`, { ...task, subtasks: updatedSubtasks }, {
+        headers: {
+          Authorization: `Bearer ${authState.token}`
+        }
+      });
+      setTasks(tasks.map((t) => (t._id === taskId ? res.data : t)));
+    } catch (err) {
+      console.error('Error toggling subtask:', err);
+    }
+  };
+
   const handleDeleteTask = async (taskId) => {
     try {
       await axios.delete(`/api/tasks/${taskId}`, {
@@ -63,6 +103,22 @@ const Dashboard = ({ onToggle, onSaveNotes, onToggleSubtask, filter, setFilter }
     }
   };
 
+  const handleSaveNotes = async (taskId, notes) => {
+    const task = tasks.find((task) => task._id === taskId);
+    if (!task) return;
+
+    try {
+      const res = await axios.put(`/api/tasks/${taskId}`, { ...task, notes }, {
+        headers: {
+          Authorization: `Bearer ${authState.token}`
+        }
+      });
+      setTasks(tasks.map((t) => (t._id === taskId ? res.data : t)));
+    } catch (err) {
+      console.error('Error saving notes:', err);
+    }
+  };
+
   return (
     <div>
       <AddTask onAdd={handleAddTask} />
@@ -71,13 +127,7 @@ const Dashboard = ({ onToggle, onSaveNotes, onToggleSubtask, filter, setFilter }
         <button onClick={() => setFilter('completed')} className="p-2 bg-red-700 hover:bg-red-900 text-white rounded mr-2">Completed</button>
         <button onClick={() => setFilter('pending')} className="p-2 bg-red-700 hover:bg-red-900 text-white rounded">Pending</button>
       </div>
-      <TaskList 
-        tasks={filteredTasks} 
-        onToggle={onToggle} 
-        onDelete={handleDeleteTask} 
-        onSaveNotes={onSaveNotes} 
-        onToggleSubtask={onToggleSubtask} 
-      />
+      <TaskList tasks={filteredTasks} onToggle={handleToggleTask} onDelete={handleDeleteTask} onSaveNotes={handleSaveNotes} onToggleSubtask={handleToggleSubtask} />
     </div>
   );
 };

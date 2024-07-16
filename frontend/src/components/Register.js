@@ -4,7 +4,7 @@ import { AuthContext } from '../contexts/AuthContext';
 
 const Register = () => {
   const { register } = useContext(AuthContext);
-  const [userData, setUserData] = useState({ username: '', password: '' });
+  const [userData, setUserData] = useState({ username: '', email: '', password: '' });
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -31,7 +31,19 @@ const Register = () => {
               name="username"
               value={userData.username}
               onChange={handleChange}
-              className="w-full p-2 border border-gray-700 bg-gray-800 text-white rounded"
+              className="w-full p-2 border border-gray-700 bg-white text-black rounded"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label htmlFor="email" className="block text-white mb-2">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={userData.email}
+              onChange={handleChange}
+              className="w-full p-2 border border-gray-700 bg-white text-black rounded"
               required
             />
           </div>
@@ -43,7 +55,7 @@ const Register = () => {
               name="password"
               value={userData.password}
               onChange={handleChange}
-              className="w-full p-2 border border-gray-700 bg-gray-800 text-white rounded"
+              className="w-full p-2 border border-gray-700 bg-white text-black rounded"
               required
             />
           </div>
