@@ -1,6 +1,7 @@
 import React, { useEffect, useContext, useState } from 'react';
 import AddTask from './AddTask';
 import TaskList from './TaskList';
+import ProgressBar from './ProgressBar';
 import { AuthContext } from '../contexts/AuthContext';
 import axios from 'axios';
 
@@ -119,9 +120,15 @@ const Dashboard = () => {
     }
   };
 
+  const completedTasks = tasks.filter(task => task.completed).length;
+  const totalTasks = tasks.length;
+
   return (
     <div>
       <AddTask onAdd={handleAddTask} />
+      <div className="mb-4">
+        <ProgressBar completedTasks={completedTasks} totalTasks={totalTasks} />
+      </div>
       <div className="flex justify-center mb-4">
         <button onClick={() => setFilter('all')} className="p-2 bg-red-700 hover:bg-red-900 text-white rounded mr-2">All</button>
         <button onClick={() => setFilter('completed')} className="p-2 bg-red-700 hover:bg-red-900 text-white rounded mr-2">Completed</button>

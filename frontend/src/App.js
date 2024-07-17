@@ -5,7 +5,6 @@ import AuthProvider, { AuthContext } from './contexts/AuthContext';
 import TaskDetails from './components/TaskDetails';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import ProgressBar from './components/ProgressBar';
 import Register from './components/Register';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
@@ -13,7 +12,6 @@ import Dashboard from './components/Dashboard';
 const App = () => {
   const { authState } = useContext(AuthContext);
   const [tasks, setTasks] = useState([]);
-  const [filter, setFilter] = useState('all');
   const [isDarkMode, setIsDarkMode] = useState(() => {
     const savedMode = localStorage.getItem('darkMode');
     return savedMode !== null ? JSON.parse(savedMode) : false;
@@ -99,9 +97,6 @@ const App = () => {
     );
   };
 
-  const completedTasks = tasks.filter(task => task.completed).length;
-  const totalTasks = tasks.length;
-
   return (
     <div className={`App container mx-auto p-4 min-h-screen ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'}`}>
       <Header />
@@ -113,27 +108,24 @@ const App = () => {
           {isDarkMode ? 'Light' : 'Dark'}
         </button>
       </div>
-      <ProgressBar completedTasks={completedTasks} totalTasks={totalTasks} />
       <Routes>
         <Route path="/" element={<Navigate to="/dashboard" />} />
-        <Route 
-          path="/dashboard" 
+        <Route
+          path="/dashboard"
           element={
             authState.isAuthenticated ? (
-              <Dashboard 
-                tasks={tasks} 
-                onAdd={addTask} 
-                onToggle={toggleTaskCompletion} 
-                onDelete={deleteTask} 
-                onSaveNotes={saveNotes} 
-                onToggleSubtask={toggleSubtaskCompletion} 
-                filter={filter} 
-                setFilter={setFilter}
+              <Dashboard
+                tasks={tasks}
+                onAdd={addTask}
+                onToggle={toggleTaskCompletion}
+                onDelete={deleteTask}
+                onSaveNotes={saveNotes}
+                onToggleSubtask={toggleSubtaskCompletion}
               />
             ) : (
               <Navigate to="/login" />
             )
-          } 
+          }
         />
         <Route path="/task/:id" element={<TaskDetails tasks={tasks} onToggleSubtask={toggleSubtaskCompletion} />} />
         <Route path="/register" element={<Register />} />
