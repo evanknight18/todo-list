@@ -42,7 +42,7 @@ const AuthProvider = ({ children }) => {
       toast.error('Registration failed.');
     }
   };
-
+  
   const login = async (userData) => {
     try {
       const res = await axios.post('/api/auth/login', userData);
@@ -59,6 +59,7 @@ const AuthProvider = ({ children }) => {
       toast.error('Login failed.');
     }
   };
+  
 
   const logout = () => {
     setAuthState({
