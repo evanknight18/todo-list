@@ -1,14 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import AddTask from './components/AddTask';
-import TaskList from './components/TaskList';
+import AuthProvider, { AuthContext } from './contexts/AuthContext';
 import TaskDetails from './components/TaskDetails';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ProgressBar from './components/ProgressBar';
+import Register from './components/Register';
+import Login from './components/Login';
+import Dashboard from './components/Dashboard';
 
 const App = () => {
+  const { authState } = useContext(AuthContext);
   const [tasks, setTasks] = useState([]);
   const [filter, setFilter] = useState('all');
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -96,56 +99,57 @@ const App = () => {
     );
   };
 
-  const filteredTasks = tasks.filter((task) => {
-    if (filter === 'completed') {
-      return task.completed;
-    }
-    if (filter === 'pending') {
-      return !task.completed;
-    }
-    return true;
-  });
-
   const completedTasks = tasks.filter(task => task.completed).length;
   const totalTasks = tasks.length;
 
   return (
-    <Router>
-      <div className={`App container mx-auto p-4 min-h-screen ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'}`}>
-        <Header />
-        <div className="flex justify-end mb-4">
-          <button
-            onClick={() => setIsDarkMode(!isDarkMode)}
-            className="p-2 bg-black hover:bg-red-900 text-white rounded"
-          >
-            {isDarkMode ? 'Light' : 'Dark'}
-          </button>
-        </div>
-        <ProgressBar completedTasks={completedTasks} totalTasks={totalTasks} />
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <>
-                <AddTask onAdd={addTask} />
-                <div className="flex justify-center mb-4">
-                  <button onClick={() => setFilter('all')} className="p-2 bg-red-700 hover:bg-red-900 text-white rounded mr-2">All</button>
-                  <button onClick={() => setFilter('completed')} className="p-2 bg-red-700 hover:bg-red-900 text-white rounded mr-2">Completed</button>
-                  <button onClick={() => setFilter('pending')} className="p-2 bg-red-700 hover:bg-red-900 text-white rounded">Pending</button>
-                </div>
-                <TaskList tasks={filteredTasks} onToggle={toggleTaskCompletion} onDelete={deleteTask} onSaveNotes={saveNotes} onToggleSubtask={toggleSubtaskCompletion} />
-              </>
-            }
-          />
-          <Route
-            path="/task/:id"
-            element={<TaskDetails tasks={tasks} onToggleSubtask={toggleSubtaskCompletion} />}
-          />
-        </Routes>
-        <Footer />
+    <div className={`App container mx-auto p-4 min-h-screen ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'}`}>
+      <Header />
+      <div className="flex justify-end mb-4">
+        <button
+          onClick={() => setIsDarkMode(!isDarkMode)}
+          className="p-2 bg-black hover:bg-red-900 text-white rounded"
+        >
+          {isDarkMode ? 'Light' : 'Dark'}
+        </button>
       </div>
-    </Router>
+      <ProgressBar completedTasks={completedTasks} totalTasks={totalTasks} />
+      <Routes>
+        <Route path="/" element={<Navigate to="/dashboard" />} />
+        <Route 
+          path="/dashboard" 
+          element={
+            authState.isAuthenticated ? (
+              <Dashboard 
+                tasks={tasks} 
+                onAdd={addTask} 
+                onToggle={toggleTaskCompletion} 
+                onDelete={deleteTask} 
+                onSaveNotes={saveNotes} 
+                onToggleSubtask={toggleSubtaskCompletion} 
+                filter={filter} 
+                setFilter={setFilter}
+              />
+            ) : (
+              <Navigate to="/login" />
+            )
+          } 
+        />
+        <Route path="/task/:id" element={<TaskDetails tasks={tasks} onToggleSubtask={toggleSubtaskCompletion} />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+      <Footer />
+    </div>
   );
 };
 
-export default App;
+const AppWrapper = () => (
+  <AuthProvider>
+    <Router>
+      <App />
+    </Router>
+  </AuthProvider>
+);
+
+export default AppWrapper;

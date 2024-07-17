@@ -9,7 +9,8 @@ const AddTask = ({ onAdd }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (task) {
-      onAdd({ name: task, priority, dueDate, subtasks });
+      const filteredSubtasks = subtasks.filter(subtask => subtask.name.trim() !== '');
+      onAdd({ name: task, priority, dueDate, subtasks: filteredSubtasks });
       setTask('');
       setPriority('low');
       setDueDate('');

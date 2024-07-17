@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { format, isPast, parseISO } from 'date-fns';
 import { Link } from 'react-router-dom';
+import { FaStickyNote } from 'react-icons/fa';
 import TaskDetailsModal from './TaskDetailsModal';
+import Modal from 'react-modal';
 
 const Task = ({ task, onToggle, onDelete, onSaveNotes, onToggleSubtask }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
+  const [isNotesModalOpen, setIsNotesModalOpen] = useState(false);
 
   const priorityColor = {
     low: 'bg-green-500',
@@ -16,24 +19,32 @@ const Task = ({ task, onToggle, onDelete, onSaveNotes, onToggleSubtask }) => {
 
   const handleCheckboxClick = (e) => {
     e.stopPropagation();
-    onToggle(task.id);
+    onToggle(task._id);
   };
 
   const handleSubtaskCheckboxClick = (e, subtaskIndex) => {
     e.stopPropagation();
-    onToggleSubtask(task.id, subtaskIndex);
+    onToggleSubtask(task._id, subtaskIndex);
   };
 
   const handleDeleteClick = (e) => {
     e.stopPropagation();
-    onDelete(task.id);
+    onDelete(task._id);
   };
 
   const handleTaskClick = (e) => {
     if (e.target.type !== 'checkbox') {
-      setIsModalOpen(true);
+      setIsTaskModalOpen(true);
     }
   };
+
+  const handleNotesClick = (e) => {
+    e.stopPropagation();
+    console.log('Notes icon clicked'); // Debugging line
+    setIsNotesModalOpen(true);
+  };
+
+  console.log('Task:', task); // Debugging line to check task data
 
   return (
     <div>
@@ -49,11 +60,17 @@ const Task = ({ task, onToggle, onDelete, onSaveNotes, onToggleSubtask }) => {
             className="mr-2"
           />
           <div>
-            <Link to={`/task/${task.id}`} className="text-lg">
+            <Link to={`/task/${task._id}`} className="text-lg">
               <span className={`${task.completed ? 'line-through text-gray-500' : ''}`}>
                 {task.name}
               </span>
             </Link>
+            {task.notes && task.notes.trim() !== '' && (
+              <FaStickyNote 
+                className="inline ml-2 text-yellow-300 cursor-pointer" 
+                onClick={handleNotesClick}
+              />
+            )}
             {task.dueDate && (
               <div className="text-sm">
                 Due: {format(parseISO(task.dueDate), 'MM/dd/yyyy')}
@@ -76,6 +93,15 @@ const Task = ({ task, onToggle, onDelete, onSaveNotes, onToggleSubtask }) => {
                 ))}
               </ul>
             )}
+            {task.labels && task.labels.length > 0 && (
+              <div className="mt-2">
+                {task.labels.map((label, index) => (
+                  <span key={index} className="p-1 bg-blue-700 text-white rounded mr-2">
+                    {label}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
         </div>
         <button
@@ -87,10 +113,27 @@ const Task = ({ task, onToggle, onDelete, onSaveNotes, onToggleSubtask }) => {
       </div>
       <TaskDetailsModal
         task={task}
-        isOpen={isModalOpen}
-        onRequestClose={() => setIsModalOpen(false)}
+        isOpen={isTaskModalOpen}
+        onRequestClose={() => setIsTaskModalOpen(false)}
         onSaveNotes={onSaveNotes}
       />
+      <Modal 
+        isOpen={isNotesModalOpen} 
+        onRequestClose={() => setIsNotesModalOpen(false)} 
+        className="flex items-center justify-center fixed inset-0 z-50 overflow-auto"
+        overlayClassName="fixed inset-0 bg-black bg-opacity-50"
+      >
+        <div className="bg-gray-800 text-white rounded-lg p-8 w-full max-w-lg">
+          <h2 className="text-2xl mb-4">Notes for {task.name}</h2>
+          <p>{task.notes}</p>
+          <button 
+            onClick={() => setIsNotesModalOpen(false)} 
+            className="p-2 bg-gray-500 hover:bg-gray-700 text-white rounded mt-4"
+          >
+            Close
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 };
