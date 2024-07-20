@@ -1,4 +1,3 @@
-// backend/models/Task.js
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -14,25 +13,22 @@ const TaskSchema = new Schema({
   },
   priority: {
     type: String,
-    default: 'low'
+    required: true
   },
   dueDate: {
     type: Date
-  },
-  notes: {
-    type: String
   },
   completed: {
     type: Boolean,
     default: false
   },
+  notes: {
+    type: String
+  },
   subtasks: [
     {
       name: String,
-      completed: {
-        type: Boolean,
-        default: false
-      }
+      completed: Boolean
     }
   ]
 });

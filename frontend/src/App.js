@@ -8,6 +8,7 @@ import Footer from './components/Footer';
 import Register from './components/Register';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
+import './App.css';
 
 const App = () => {
   const { authState } = useContext(AuthContext);
